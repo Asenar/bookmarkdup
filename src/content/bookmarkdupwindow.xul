@@ -32,6 +32,7 @@
     <spacer flex="1"/>
     <button id="btnOpenBmark" label="Open" accesskey="O" disabled="true" oncommand="openbmark();"/>
     <button id="btnDelBmarks" label="Delete" accesskey="D" disabled="true" oncommand="delbmarks();"/>
+    <button id="btnDelAllButFirstBmarks" label="Delete all except first bookmark" accesskey="X" disabled="false" oncommand="delAllButFirst();"/>
   </hbox>
 </vbox>
 

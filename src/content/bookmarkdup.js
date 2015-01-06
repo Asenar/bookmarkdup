@@ -164,7 +164,8 @@ function clearDupDetails() {
 }
 
 /**
-* Updates the right listbox with information for the selected duplicate
+* Updates the right listbox with information
+* for the selected duplicate
 */
 function urisel() {
   var lbdup = document.getElementById("lbDupUris");
@@ -251,3 +252,65 @@ function delbmarks() {
   
   setStatus(statusMsg, uri);
 }
+
+function delAllButFirst() {
+	alert("ooO oui");
+  var lbdupdetails = document.getElementById("lbDupDetails");
+  var items = lbdupdetails.children;
+	console.info(items);
+	alert("il y a "+items.length+" éléments en tout");
+  if (items.length < 2) {
+		alert("inférieur à 2 alors on fait rien");
+		return;
+	}
+
+  var remove_ids = [];
+  var uri = null;
+  // Iterate over selected items
+  for (var i = 2; i < items.length; i++){
+		console.info("Start with "+i);
+    var item = items[i];
+    var itemId = dupinfo[item.value].itemId;
+		console.log(item);
+		console.log("(means itemId="+itemId+")");
+    uri = dupinfo[item.value].uri;
+    remove_ids.push(itemId); // Add to list of items to be removed
+
+    console.log(itemId+" added to remove list");
+    // Iterate over current dupeList, remove items from that list
+    var bookmarks = dupList[uri];
+    for (var j = bookmarks.length-1; j >= 0; j--) {
+      if (bookmarks[j].node.itemId == itemId) {
+        bookmarks.splice(j, 1);
+      }
+    }
+  }
+
+  // If there is no longer sufficient bookmarks to be a dupe,
+	// delete this and deselect this item.
+  if (dupList[uri].length <= 1) {
+    delete dupList[uri];
+    var lbdupuris = document.getElementById("lbDupUris");
+    lbdupuris.removeItemAt(lbdupuris.getIndexOfItem(lbdupuris.selectedItem));
+    lbdupuris.selectedItem = null;
+    clearDupDetails();
+  }
+  else {
+    urisel();
+  }
+
+  // Delete all the duplicated bookmarks
+  for (var i = 0; i < remove_ids.length; i++) {
+		console.log("removing of "+remove_ids[i]);
+    bookmarksService.removeItem(remove_ids[i]);
+  }
+
+  var statusMsg = "";
+  if (remove_ids.length > 1) {
+    statusMsg += remove_ids.length + " x ";
+  }
+  statusMsg += uri + " has been removed.";
+  
+  setStatus(statusMsg, uri);
+}
+
